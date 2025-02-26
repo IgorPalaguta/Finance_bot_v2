@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Додавання категорії</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Додати нову категорію</h2>
+    <input type="text" id="categoryName" placeholder="Введіть назву категорії">
+    <button onclick="addCategory()">Додати</button>
+    <a href="/"><button>⬅ Назад</button></a>
+</div>
+
+<script>
+    let userId = null;
+
+    function getUserIdFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        userId = urlParams.get('user_id');
+
+        if (!userId) {
+            alert("❌ User ID не отримано!");
+            window.location.href = "/";
+        }
+    }
+
+    getUserIdFromURL();
+
+    function addCategory() {
+        let category = document.getElementById("categoryName").value;
+
+        if (!category) {
+            alert("❌ Введіть назву категорії!");
+            return;
+        }
+
+        fetch('/add_category', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId, category: category })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            if (data.message.includes("✅")) {
+                window.location.href = "/"; // Повертаємося на головну сторінку після успішного додавання
+            }
+        })
+        .catch(error => console.error('Помилка:', error));
+    }
+</script>
+
+</body>
+</html>
