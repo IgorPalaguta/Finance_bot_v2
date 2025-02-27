@@ -64,9 +64,15 @@ def main_menu():
     markup.add(btn_webapp)
     return markup
 
-@bot.message_handler(commands=['start'])
-def start_message(message):
-    bot.send_message(message.chat.id, "Вітаю! Оберіть дію:", reply_markup=main_menu())
+def start(update, context):
+    user = update.effective_user
+    init_data = update.callback_query.message.chat.id  # ID користувача
+
+    button = InlineKeyboardMarkup([
+        [InlineKeyboardButton("Відкрити Web App", url=f"https://finance-bot-v2.onrender.com?user_id={user.id}")]
+    ])
+    
+    context.bot.send_message(chat_id=user.id, text="Відкрийте веб-застосунок:", reply_markup=button)
 
 @bot.message_handler(func=lambda message: message.text in ["➕ Додати витрату", "📊 Статистика", "➕ Додати категорію", "💰 Створити бюджет", "💰 Залишок бюджету", "ℹ️ Допомога"])
 def handle_buttons(message):
