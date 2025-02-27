@@ -11,10 +11,14 @@ def get_db_connection():
     return conn
 
 
-# 📌 Головна сторінка
 @app.route('/')
 def index():
-    return render_template('index.html')
+    user_id = request.args.get('user_id')
+    
+    if not user_id:
+        return "❌ User ID не отримано!", 400
+    
+    return f"✅ Ваш Telegram ID: {user_id}"
 
 
 
